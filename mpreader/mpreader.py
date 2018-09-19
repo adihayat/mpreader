@@ -11,6 +11,17 @@ import multiprocessing as mp
 class DataSource(object):
 
         def __init__(self, sampler , batch_size, data_size_dict  , reader,  num_workers=4):
+            """
+            @params:    sampler()       : return batch size lists of sample meta data (to be used by the reader)
+                        batch_size      : int batch size
+                        data_size_dict  : buffer name , shape and type
+                                            #                 buffer name           ,   buffer_shape, buffer_type
+                                            data_size_dict = {"data"                : ( [224,640]   , np.uint8)     ,
+                                                              "labels"              : ( [1]         , np.uint16)    }
+                        reader(meta)    : return meta , buffers(meta),
+                        num_workers     : num of working processes
+
+            """
             self.num_workers    = num_workers
             self.sampler        = sampler
             self.batch_size     = batch_size

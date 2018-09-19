@@ -1,3 +1,3 @@
 ### Multiprocess batch size reader
 
-see example.py for simple usage
+see mpreader/example.py for simple usage
