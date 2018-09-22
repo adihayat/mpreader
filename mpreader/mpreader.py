@@ -46,7 +46,9 @@ class DataSource(object):
 
 
         def iterator(self):
-
+            """
+            returns: iterator to <buffers dict , metadata , batch_idx (in epoch) >
+            """
             #-----------------------------------------------------------------------
             def process_samples(samples):
                 data_samples   = defaultdict(list)
@@ -124,13 +126,13 @@ class DataSource(object):
                 #---------------------------------------------------------------
                 # Return the data
                 #---------------------------------------------------------------
-                for offset in xrange(len(batch_samples)):
+                for batch_idx in xrange(len(batch_samples)):
                     if self.move_close :
                         break
 
                     data , metadata = self.batch_queue.get()
                     num_items = len(metadata)
-                    yield data, metadata
+                    yield data, metadata , batch_idx
 
             #---------------------------------------------------------------
             # Join the workers

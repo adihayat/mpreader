@@ -8,7 +8,7 @@ pip install git+https://github.com/adihayat/mpreader.git
 
 see usage example below:
 
-```
+```python
 import mpreader
 import numpy as np
 
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     ds = mpreader.DataSource(Sampler(samples_list , 16) , 16  ,data_size_dict ,
                              Reader("/path/to/binary/"  , data_size_dict ))
     iterator = ds.iterator()
-    iterator.next()
+    iterator.next() # returns <data , metadata , batch_idx>
     iterator.next()
     iterator.next()
     iterator.next()
