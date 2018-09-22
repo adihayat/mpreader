@@ -12,13 +12,16 @@ class DataSource(object):
 
         def __init__(self, sampler , batch_size, data_size_dict  , reader,  num_workers=4):
             """
-            @params:    sampler()       : return batch size lists of sample meta data (to be used by the reader)
+            @params:    sampler()       : return list of batch size lists of sample meta data (to be used by the reader)
+                                          i.e [ [batch_size list of samples],
+                                                [batch_size list of samples] ... ]
                         batch_size      : int batch size
                         data_size_dict  : buffer name , shape and type
                                             #                 buffer name           ,   buffer_shape, buffer_type
                                             data_size_dict = {"data"                : ( [224,640]   , np.uint8)     ,
                                                               "labels"              : ( [1]         , np.uint16)    }
-                        reader(meta)    : return meta , buffers(meta),
+                        reader(meta)    : return meta , buffers(meta) ;
+                                          buffers is dictionary of <buffer_name : np.array> , np.array size and type is according to data_size_dict
                         num_workers     : num of working processes
 
             """
