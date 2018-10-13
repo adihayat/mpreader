@@ -86,7 +86,7 @@ class DataSource(object):
                     if data.values()[0].shape[0] < self.batch_size:
                         assert(0)
                     else:
-                        batch_queue.put(data, metadata , timeout=1)
+                        batch_queue.put(data, metadata , timeout=300)
             #-----------------------------------------------------------------------
             #-------------------------------------------------------------------
             # Set up the parallel generator
