@@ -3,7 +3,7 @@ import numpy as np
 
 #                 buffer name           ,   buffer_shape, buffer_type
 data_size_dict = {"data"                : ( [224,640]   , np.uint8)     ,
-                  "lm_vert_attributes"              : ( [1]         , np.uint16)    }
+                  "labels"              : ( [1]         , np.uint16)    }
 
 # Example simple reader, reading single sample at a time
 class Reader(object):
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     samples_list = np.arange(1000).tolist()
     ds = mpreader.DataSource(Sampler(samples_list , 16) , 16  ,data_size_dict ,
-                             Reader("/mobileye/algo_REM3/adih/Road4Data/0920_lm_data/bins/train/000000" , data_size_dict ))
+                             Reader("/path/to/binary" , data_size_dict ))
 
     iterator = ds.iterator()
     dataset = tf.data.Dataset.from_generator(lambda : dataset_utils.wrap_iter_data(iterator) , dataset_utils.getTFTypeDict(data_size_dict) )
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     print "fetch_time = {}".format((duration)/num_of_trails)
     print _el['data'].shape
-    print _el['lm_vert_attributes'].shape
+    print _el['labels'].shape
     print _el['idx']
 
     ds.close()
