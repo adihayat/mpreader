@@ -3,7 +3,7 @@ import numpy as np
 
 #                 buffer name           ,   buffer_shape, buffer_type
 data_size_dict = {"data"                : ( [224,640]   , np.uint8)     ,
-                  "labels"              : ( [1]         , np.uint16)    }
+                  "lm_vert_attributes"              : ( [1]         , np.uint16)    }
 
 # Example simple reader, reading single sample at a time
 class Reader(object):
@@ -44,21 +44,16 @@ class Sampler(object):
 if __name__ == "__main__":
 
     import tensorflow as tf
+    import dataset_utils
 
     samples_list = np.arange(1000).tolist()
     ds = mpreader.DataSource(Sampler(samples_list , 16) , 16  ,data_size_dict ,
-                             Reader("/path/to/binary" , data_size_dict ))
+                             Reader("/mobileye/algo_REM3/adih/Road4Data/0920_lm_data/bins/train/000000" , data_size_dict ))
+
     iterator = ds.iterator()
-
-    def get_iter_data():
-        while True:
-            e  = iterator.next()
-            yield e[0]['data'] , e[0]['labels'] , str(e[1]) , e[2]
-
-
-    dataset = tf.data.Dataset.from_generator(get_iter_data , (tf.int32  , tf.int32 , tf.string , tf.int32))
+    dataset = tf.data.Dataset.from_generator(lambda : dataset_utils.wrap_iter_data(iterator) , dataset_utils.getTFTypeDict(data_size_dict) )
     diter = dataset.make_initializable_iterator()
-    el = diter.get_next()
+    el = diter.get_next(name="input")
     import time
 
     num_of_trails = 1000
@@ -76,9 +71,9 @@ if __name__ == "__main__":
             time.sleep(0.01)
 
     print "fetch_time = {}".format((duration)/num_of_trails)
-    print _el[0].shape
-    print _el[1].shape
-    print _el[2]
+    print _el['data'].shape
+    print _el['lm_vert_attributes'].shape
+    print _el['idx']
 
     ds.close()
 
