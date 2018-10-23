@@ -32,6 +32,30 @@ def getTFTypeDict(data_size_dict):
 
     return rdict
 
+def getTFShapeDict(batch_size , data_size_dict):
+    """
+    producing compatible tf.types dict from data_size_dict
+    @params:
+
+                data_size_dict  : buffer name , shape and type
+                                    #                 buffer name           ,   buffer_shape, buffer_type
+                                    data_size_dict = {"data"                : ( [224,640]   , np.uint8)     ,
+                                                      "labels"              : ( [1]         , np.uint16)    }
+
+    """
+    rdict = {}
+    for k , v in data_size_dict.iteritems():
+        rdict[k] = [batch_size] +  v[0]
+
+
+    assert(not 'meta' in data_size_dict.keys())
+    assert(not 'idx' in data_size_dict.keys())
+
+    rdict['meta'] = ()
+    rdict['idx']  = ()
+
+    return rdict
+
 
 def wrap_iter_data(iterator):
     """

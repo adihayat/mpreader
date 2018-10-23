@@ -51,10 +51,12 @@ if __name__ == "__main__":
                              Reader("/path/to/binary" , data_size_dict ))
 
     iterator = ds.iterator()
-    dataset = tf.data.Dataset.from_generator(lambda : dataset_utils.wrap_iter_data(iterator) , dataset_utils.getTFTypeDict(data_size_dict) )
+    dataset = tf.data.Dataset.from_generator(lambda : dataset_utils.wrap_iter_data(iterator) , dataset_utils.getTFTypeDict(data_size_dict) ,
+                                             dataset_utils.getTFShapeDict(16 , data_size_dict))
     diter = dataset.make_initializable_iterator()
     el = diter.get_next(name="input")
     import time
+    print el['data'].get_shape()
 
     num_of_trails = 1000
 
