@@ -86,7 +86,7 @@ class DataSource(object):
                     if data.values()[0].shape[0] < self.batch_size:
                         assert(0)
                     else:
-                        batch_queue.put(data, metadata , timeout=300)
+                        batch_queue.put(data, metadata , timeout=3000)
             #-----------------------------------------------------------------------
             #-------------------------------------------------------------------
             # Set up the parallel generator
@@ -95,7 +95,7 @@ class DataSource(object):
             # Set up the queues
             #---------------------------------------------------------------
 
-            max_size = self.num_workers*5
+            max_size = self.num_workers*10
             sample_queue = mp.Queue()
             self.batch_queue = DataQueue(self.data_shapes_templates, max_size)
 
