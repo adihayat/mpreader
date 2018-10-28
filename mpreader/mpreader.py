@@ -7,6 +7,7 @@ from collections import defaultdict
 from data_queue import  DataQueue
 import math
 import multiprocessing as mp
+import time
 
 class DataSource(object):
 
@@ -41,6 +42,7 @@ class DataSource(object):
 
         def close(self):
             self.move_close = True
+            self.batch_queue.close()
             for w in self.workers:
                 w.terminate()
 
@@ -71,11 +73,10 @@ class DataSource(object):
                     # Process the sample
                     #---------------------------------------------------------------
                     try:
-                        samples = sample_queue.get(timeout=1)
+                        samples = sample_queue.get(timeout=0.1)
                     except Exception as E:
-                        print "WARNING empty queue"
-                        print E
-                        break
+                        time.sleep(0.1)
+                        continue
 
                     data , metadata = process_samples(samples)
 
@@ -86,7 +87,7 @@ class DataSource(object):
                     if data.values()[0].shape[0] < self.batch_size:
                         assert(0)
                     else:
-                        batch_queue.put(data, metadata , timeout=3000)
+                        batch_queue.put(data, metadata , timeout=0.1)
             #-----------------------------------------------------------------------
             #-------------------------------------------------------------------
             # Set up the parallel generator

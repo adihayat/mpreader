@@ -21,7 +21,7 @@
 import queue as q
 import numpy as np
 import multiprocessing as mp
-import pdb
+import time
 
 #-------------------------------------------------------------------------------
 class DataQueue:
@@ -33,6 +33,7 @@ class DataQueue:
         self.data_queue = {}
         self.array_pool = []
         self.array_queue = mp.Queue(maxsize)
+        self.move_close  = False
         for k in data_templates:
             self.data_queue[k] = dict(shape=data_templates[k].shape , dtype=data_templates[k].dtype , data_bc=len(data_templates[k].tobytes())  , array_pool=[])
             for i in xrange(maxsize):
@@ -51,6 +52,10 @@ class DataQueue:
 
     def __del__(self):
         self.close()
+
+
+    def close(self):
+        self.move_close = True
 
     #---------------------------------------------------------------------------
     def put(self, data, gt_params, *args, **kwargs):
@@ -78,10 +83,16 @@ class DataQueue:
         # If we can not get the slot within timeout we are actually full, not
         # empty
         #-----------------------------------------------------------------------
-        try:
-            arr_id = self.array_queue.get(*args, **kwargs)
-        except q.Empty:
-            raise q.Full()
+        while not self.move_close:
+            try:
+                arr_id = self.array_queue.get(*args, **kwargs)
+                break
+            except q.Empty:
+                time.sleep(0.1)
+                continue
+
+        if self.move_close:
+            return
 
         #-----------------------------------------------------------------------
         # Copy the arrays into the shared pool
