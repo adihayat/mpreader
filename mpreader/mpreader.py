@@ -109,7 +109,7 @@ class DataSource(object):
                 args = (sample_queue, self.batch_queue)
                 w = mp.Process(target=batch_producer, args=args)
                 self.workers.append(w)
-                w.daemon = False
+                w.daemon = True
                 w.start()
 
 
