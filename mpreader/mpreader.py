@@ -75,7 +75,7 @@ class DataSource(object):
                     try:
                         samples = sample_queue.get(timeout=0.1)
                     except Exception as E:
-                        time.sleep(0.1)
+                        time.sleep(0.01)
                         continue
 
                     data , metadata = process_samples(samples)
