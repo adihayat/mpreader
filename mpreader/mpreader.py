@@ -8,6 +8,7 @@ from data_queue import  DataQueue
 import math
 import multiprocessing as mp
 import time
+import warnings
 
 class DataSource(object):
 
@@ -34,6 +35,7 @@ class DataSource(object):
             self.reader         = reader
             self.sampler        = sampler
             self.workers        = []
+            self.iter           = None
 
             self.data_shapes_templates = {}
             for k in data_size_dict:
@@ -42,12 +44,20 @@ class DataSource(object):
 
         def close(self):
             self.move_close = True
-            self.batch_queue.close()
-            for w in self.workers:
-                w.terminate()
+            try:
+                self.iter.next()
+            except Exception as E:
+                pass
 
 
         def iterator(self):
+            if not self.iter is None:
+                warnings.warn("Iterator already grabbed")
+
+            self.iter = self._iterator()
+            return self.iter
+
+        def _iterator(self):
             """
             returns: iterator to <buffers dict , metadata , batch_idx (in epoch) >
             """
@@ -68,7 +78,7 @@ class DataSource(object):
 
             #-----------------------------------------------------------------------
             def batch_producer(sample_queue, batch_queue):
-                while not self.move_close:
+                while True:
                     #---------------------------------------------------------------
                     # Process the sample
                     #---------------------------------------------------------------
@@ -138,7 +148,23 @@ class DataSource(object):
             #---------------------------------------------------------------
             # Join the workers
             #---------------------------------------------------------------
+            try :
+                self.batch_queue.close()
+            except Exception as E:
+                pass
+
+            try :
+                while not sample_queue.empty():
+                    sample_queue.get()
+            except Exception as E:
+                pass
+
+            try :
+                sample_queue.close()
+            except Exception as E:
+                pass
+
             for w in self.workers:
-                w.join()
+                w.terminate()
 
 

@@ -56,6 +56,10 @@ class DataQueue:
 
     def close(self):
         self.move_close = True
+        self.array_queue.close()
+        self.queue.close()
+
+
 
     #---------------------------------------------------------------------------
     def put(self, data, gt_params, *args, **kwargs):
