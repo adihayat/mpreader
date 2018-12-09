@@ -32,7 +32,7 @@ def getTFTypeDict(data_size_dict):
 
     return rdict
 
-def getTFShapeDict(batch_size , data_size_dict):
+def getTFShapeDict(data_size_dict):
     """
     producing compatible tf.types dict from data_size_dict
     @params:
@@ -45,7 +45,8 @@ def getTFShapeDict(batch_size , data_size_dict):
     """
     rdict = {}
     for k , v in data_size_dict.iteritems():
-        rdict[k] = [batch_size] +  v[0]
+        # Adding None for unknown batch size
+        rdict[k] = [None] +  v[0]
 
 
     assert(not 'meta' in data_size_dict.keys())
