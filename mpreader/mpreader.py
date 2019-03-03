@@ -12,7 +12,7 @@ import warnings
 
 class DataSource(object):
 
-        def __init__(self, sampler , batch_size, data_size_dict  , reader,  num_workers=4):
+        def __init__(self, sampler , batch_size, data_size_dict  , reader,  num_workers=4 , queue_size=4):
             """
             @params:    sampler()       : return list of batch size lists of sample meta data (to be used by the reader)
                                           i.e [ [batch_size list of samples],
@@ -28,6 +28,7 @@ class DataSource(object):
 
             """
             self.num_workers    = num_workers
+            self.queue_size     = queue_size
             self.sampler        = sampler
             self.batch_size     = batch_size
             self.move_close     = False
@@ -106,7 +107,7 @@ class DataSource(object):
             # Set up the queues
             #---------------------------------------------------------------
 
-            max_size = self.num_workers*10
+            max_size = self.num_workers*self.queue_size
             sample_queue = mp.Queue()
             self.batch_queue = DataQueue(self.data_shapes_templates, max_size)
 
