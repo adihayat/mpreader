@@ -25,10 +25,8 @@ def getTFTypeDict(data_size_dict):
 
 
     assert(not 'meta' in data_size_dict.keys())
-    assert(not 'idx' in data_size_dict.keys())
 
     rdict['meta'] = tf.string
-    rdict['idx']  = tf.int32
 
     return rdict
 
@@ -50,10 +48,8 @@ def getTFShapeDict(data_size_dict):
 
 
     assert(not 'meta' in data_size_dict.keys())
-    assert(not 'idx' in data_size_dict.keys())
 
-    rdict['meta'] = ()
-    rdict['idx']  = ()
+    rdict['meta'] = [None,]
 
     return rdict
 
@@ -66,6 +62,5 @@ def wrap_iter_data(iterator):
     """
     while True:
         e  = iterator.next()
-        e[0]['meta'] = str(e[1])
-        e[0]['idx']  = e[2]
+        e[0]['meta'] = np.array([str(emeta) for emeta in e[1]])
         yield e[0]

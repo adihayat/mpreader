@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='mpreader',
-      version='0.13',
+      version='0.14',
       description='multiprocess batch reader for DNN training',
       url='https://github.com/adihayat/mpreader.git',
       author='adi hayat',
